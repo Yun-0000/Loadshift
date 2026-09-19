@@ -1,0 +1,27 @@
+.env
+.env.*
+!.env.example
+node_modules/
+__pycache__/
+.venv/
+.DS_Store
+.pytest_cache/
+*.egg-info/
+dist/
+build/
+.loadshift/
+
+# Local design, video production and submission materials.
+/video/
+/.impeccable/
+/DESIGN.md
+/PRODUCT.md
+/docs/FRONTEND_REVIEW.md
+/docs/SUBMISSION_DRAFT.md
+/docs/TRIAL_PROTOCOL.md
+/docs/VIDEO_SHOTLIST.md
+/artifacts/acceptance/
+/artifacts/cover.png
+/artifacts/*.mp4
+/scripts/harvest_demo_numbers.py
+/.vercel/

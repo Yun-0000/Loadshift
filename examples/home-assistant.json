@@ -1,0 +1,12 @@
+{
+  "url": "http://homeassistant.local:8123",
+  "timezone": "America/Los_Angeles",
+  "forecast_entity": "sensor.loadshift_forecast",
+  "pv_entity": "sensor.solar_power",
+  "base_load_entity": "sensor.home_base_load",
+  "devices": {
+    "dishwasher": {"entity_id": "switch.dishwasher_remote_start"},
+    "laundry": {"entity_id": "switch.washer_remote_start"},
+    "ev": {"entity_id": "switch.ev_charging"}
+  }
+}

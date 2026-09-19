@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="340" viewBox="0 0 1280 340" role="img" aria-labelledby="title desc">
+  <title id="title">LoadShift — Solar has a schedule. Life doesn't.</title>
+  <desc id="desc">A household energy planner. Cream lettering on forest green, with a sun and three scheduled time windows.</desc>
+  <rect width="1280" height="340" rx="16" fill="#193b2d"/>
+  <g fill="none" stroke="#dce8ad" stroke-width="3" stroke-linecap="round" transform="translate(72 70)">
+    <circle r="13"/><path d="M0-23v-8M0 23v8M-23 0h-8M23 0h8M-17-17l-6-6M17 17l6 6M-17 17l-6 6M17-17l6-6"/>
+  </g>
+  <text x="116" y="86" font-family="Georgia,serif" font-size="42" font-weight="bold" fill="#f4f3ed">LoadShift</text>
+  <text x="54" y="179" font-family="Georgia,serif" font-size="56" fill="#f4f3ed">Solar has a schedule.</text>
+  <text x="54" y="247" font-family="Georgia,serif" font-size="56" font-style="italic" fill="#dce8ad">Life doesn't.</text>
+  <g transform="translate(790 66)">
+    <path d="M0 96C64 96 74 4 180 4S296 96 360 96" fill="none" stroke="#a8c687" stroke-width="3"/>
+    <path d="M0 128H360M0 175H360M0 222H360" stroke="#46604f"/>
+    <rect x="72" y="114" width="126" height="28" rx="5" fill="#dce8ad"/>
+    <rect x="174" y="161" width="90" height="28" rx="5" fill="#8cae79"/>
+    <rect x="216" y="208" width="126" height="28" rx="5" fill="#e7c584"/>
+  </g>
+</svg>

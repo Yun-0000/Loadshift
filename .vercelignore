@@ -1,0 +1,14 @@
+.git
+.venv
+.loadshift
+node_modules
+video
+.impeccable
+DESIGN.md
+PRODUCT.md
+docs
+artifacts
+reports
+tests
+__pycache__
+.pytest_cache

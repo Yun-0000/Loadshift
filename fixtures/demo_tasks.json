@@ -1,0 +1,32 @@
+{
+  "note": "Original arrangement is how these loads would run tonight without a coach. Inconvenient windows are living constraints, not utility hours.",
+  "tasks": [
+    {
+      "id": "dishwasher",
+      "name": "Dishwasher",
+      "power_w": 1800,
+      "duration_hours": 2.0,
+      "original_start": "19:00",
+      "must_finish_by": "22:00",
+      "inconvenient_windows": [{ "start": "21:00", "end": "24:00" }]
+    },
+    {
+      "id": "laundry",
+      "name": "Clothes washer",
+      "power_w": 1000,
+      "duration_hours": 1.5,
+      "original_start": "20:00",
+      "must_finish_by": "22:00",
+      "inconvenient_windows": [{ "start": "07:00", "end": "09:00" }]
+    },
+    {
+      "id": "ev",
+      "name": "EV charge (Level 2)",
+      "power_w": 3300,
+      "duration_hours": 3.0,
+      "original_start": "18:00",
+      "must_finish_by": "23:00",
+      "inconvenient_windows": [{ "start": "22:00", "end": "24:00" }]
+    }
+  ]
+}

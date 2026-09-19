@@ -1,0 +1,56 @@
+{
+  "demo_day": "2024-07-15",
+  "comparison_days": ["2024-07-15", "2024-06-20", "2024-02-05"],
+  "comparison_window": ["2024-07-08", "2024-07-21"],
+  "timezone": "America/Los_Angeles",
+  "location": {
+    "label": "Los Angeles, CA — representative US solar home, no live household meters",
+    "latitude": 34.059753,
+    "longitude": -118.2375,
+    "source": "Open-Meteo archive response coordinates for 34.0522, -118.2437"
+  },
+  "sources": {
+    "weather": {
+      "name": "Open-Meteo Historical Weather API (ERA5)",
+      "url": "https://archive-api.open-meteo.com/v1/archive",
+      "snapshots": [
+        "fixtures/raw/openmeteo_la_2024-07-15.json",
+        "fixtures/raw/openmeteo_la_2024-06-20.json",
+        "fixtures/raw/openmeteo_la_2024-02-05.json",
+        "fixtures/raw/openmeteo_la_2024-07-08_2024-07-21.json"
+      ],
+      "comparison_window": {
+        "start": "2024-07-08",
+        "end": "2024-07-21",
+        "days": 14,
+        "note": "Pre-fixed consecutive archive window for original / solar-sequential / LoadShift comparison. Not selected after seeing results."
+      },
+      "query": "latitude=34.0522&longitude=-118.2437&hourly=shortwave_radiation,direct_normal_irradiance,temperature_2m,cloud_cover&timezone=America/Los_Angeles",
+      "fields_used": ["shortwave_radiation (GHI W/m²)", "temperature_2m (°C)", "cloud_cover (%)"],
+      "live_secrets": "none — public archive, no API key"
+    },
+    "pv": {
+      "name": "PVWatts-style conversion of the Open-Meteo GHI snapshot",
+      "reference": "https://pvwatts.nrel.gov/downloads/pvwattsv5.pdf",
+      "assumptions": {
+        "stc_w": 6000,
+        "temp_coeff_per_c": -0.004,
+        "system_derate": 0.86,
+        "cell_temp": "Tair + (GHI/1000)*25 °C"
+      }
+    },
+    "load": {
+      "name": "Typical US residential summer-weekday shape",
+      "references": [
+        "OpenEI Commercial and Residential Hourly Load Profiles (NREL)",
+        "https://openei.org/datasets/dataset/commercial-and-residential-hourly-load-profiles-for-all-tmy3-locations-in-the-united-states"
+      ],
+      "note": "Constructed 30-min shape (~28 kWh/day) matching the published night-baseload / morning bump / midday cooling / evening-peak pattern. Deferrable tasks are NOT inside this series. Not a metered home."
+    },
+    "prices": {
+      "name": "PG&E E-TOU-C-like summer weekday structure",
+      "reference": "https://www.pge.com/tariffs/",
+      "note": "Rounded published-style peak 16:00–21:00 $0.52/kWh, otherwise $0.28/kWh, export $0.08/kWh. Not a live utility API and not a customer account."
+    }
+  }
+}
