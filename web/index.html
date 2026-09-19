@@ -781,6 +781,13 @@
       .summary-method table {margin-top:0;}
       .summary-method #method {margin-top:12px;}
       @media(max-width:760px){.summary-layout {grid-template-columns:1fr;gap:26px;}#when .when,#deltas .delta {min-height:72px;}}
+      #reset-home-row {margin:0 0 24px;}
+      #reset-home,#cancel-reset {background:transparent;color:var(--muted);padding:8px 0;text-decoration:underline;text-underline-offset:4px;}
+      #reset-home:hover,#cancel-reset:hover {color:var(--ink);}
+      #reset-confirm {max-width:580px;margin-top:12px;padding:16px 0;border-top:1px solid var(--line);}
+      #reset-confirm p {margin:0 0 12px;font-size:14px;line-height:1.5;}
+      #reset-confirm .reset-actions {display:flex;align-items:center;gap:24px;flex-wrap:wrap;}
+      #reset-status:empty {display:none;}
     </style>
   </head>
   <body>
@@ -890,7 +897,14 @@
       </section>
       <section class="workspace-view group" data-view="devices" hidden id="devices">
         <div class="view-heading"><div><h1>Devices &amp; preferences</h1><p>Choose the jobs. Set the boundaries.</p></div><a class="text-action" href="#today">Back to plan</a></div>
-        <div id="reset-home-row" hidden><button id="reset-home" type="button" class="secondary">Reset sample home</button><span id="reset-confirm" hidden> Restore the original three devices and clear this plan? <button id="confirm-reset" type="button">Confirm reset</button> <button id="cancel-reset" type="button" class="secondary">Cancel</button></span><p id="reset-status" class="fine" role="status"></p></div>
+        <div id="reset-home-row" hidden>
+          <button id="reset-home" type="button" aria-expanded="false" aria-controls="reset-confirm">Reset sample home</button>
+          <div id="reset-confirm" hidden>
+            <p>Restore the original three devices and clear this plan?</p>
+            <div class="reset-actions"><button id="confirm-reset" type="button">Confirm reset</button><button id="cancel-reset" type="button">Cancel</button></div>
+          </div>
+          <p id="reset-status" class="fine" role="status"></p>
+        </div>
         <div id="device-details">
           <div class="split">
             <div>
@@ -1694,10 +1708,12 @@
       $('auto-weather').onchange = () => controlAction('weather', {profile:$('auto-weather').value});
       $('reset-home').onclick = () => {
         $('reset-confirm').hidden = false;
+        $('reset-home').setAttribute('aria-expanded', 'true');
         $('confirm-reset').focus();
       };
       $('cancel-reset').onclick = () => {
         $('reset-confirm').hidden = true;
+        $('reset-home').setAttribute('aria-expanded', 'false');
         $('reset-home').focus();
       };
       $('confirm-reset').onclick = async () => {
