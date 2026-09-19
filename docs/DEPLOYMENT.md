@@ -10,6 +10,8 @@ Set `LOADSHIFT_SESSION_SECRET` to a stable randomly generated value of at least 
 
 Each browser receives signed, compressed, HttpOnly, SameSite=Strict demo state, expiring after 24hours. The public mode has no device adapter or persistent home worker. It advances the accelerated home once per visible poll, so it can run on stateless workers. Separate browsers do not control each other's plans. Cookie size is bounded; use the local application for larger homes.
 
+In **Devices**, **Reset sample home** restores the three original devices, default preferences and the 09:00 clock for that visitor only. It clears the current sample plan and activity without affecting other visitors or connected homes. Requests are serialized across tabs where Web Locks is supported; hidden tabs do not poll. A failed initial connection offers **Try again** on every page.
+
 Local rehearsal:
 
 ```sh

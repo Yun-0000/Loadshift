@@ -158,6 +158,7 @@ def demo(request: Request) -> dict:
     except (ValueError, RuntimeError) as exc:
         raise _http_error(exc) from exc
     return {
+        'public_demo': getattr(request.state, 'controller', None) is not None,
         'home': home,
         'date': day.frame.index[0].date().isoformat(),
         'now': now,
@@ -232,6 +233,16 @@ def _controller(request: Request):
 @app.get('/api/control')
 def control_status(request: Request):
     return _controller(request).snapshot()
+
+
+@app.post('/api/demo/reset')
+def reset_demo(request: Request):
+    controller = _controller(request)
+    if getattr(request.state, 'controller', None) is None:
+        raise HTTPException(403, 'Reset is available only in the hosted sample home')
+    from loadshift.controller import Controller
+    controller.state = Controller(None).state
+    return {'reset': True}
 
 
 @app.post('/api/control/start')

@@ -796,6 +796,7 @@
       </nav>
     </header>
     <main id="main">
+      <div id="load-error" role="alert" hidden><p class="err">Could not connect. Please try again.</p><button id="retry-load" type="button">Try again</button></div>
       <section class="workspace-view" data-view="today" id="today" aria-labelledby="today-title">
       <div class="view-heading"><div><h1 id="today-title">Today’s plan</h1><p data-testid="tagline">Make room for solar. Keep room for life.</p></div><span class="demo-tag" id="home-date">July 15, 2024</span></div>
       <div class="workspace">
@@ -889,6 +890,7 @@
       </section>
       <section class="workspace-view group" data-view="devices" hidden id="devices">
         <div class="view-heading"><div><h1>Devices &amp; preferences</h1><p>Choose the jobs. Set the boundaries.</p></div><a class="text-action" href="#today">Back to plan</a></div>
+        <p id="reset-home-row" hidden><button id="reset-home" type="button" class="secondary">Reset sample home</button><span id="reset-status" class="fine" role="status"></span></p>
         <div id="device-details">
           <div class="split">
             <div>
@@ -1013,6 +1015,7 @@
       </details>
       </section>
     </main>
+    <script src="/static/session.js"></script>
     <script>
       const COLORS = [
         "#2f4a32",
@@ -1423,10 +1426,11 @@
       }
 
       async function loadDemo() {
-        const res = await fetch("/api/demo");
+        const res = await sessionFetch("/api/demo");
         if (!res.ok)
           throw new Error("Could not load the demo. Reload to try again.");
         demo = await res.json();
+        $('reset-home-row').hidden = !demo.public_demo;
         tasks = demo.tasks.map((t) => ({
           ...t,
           inconvenient_windows: (t.inconvenient_windows || []).map((w) => ({
@@ -1467,7 +1471,7 @@
         $("plan-status").className = "fine";
         changedIds = new Set();
         try {
-          const res = await fetch("/api/plan", {
+          const res = await sessionFetch("/api/plan", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ tasks, now: nowValue() }),
@@ -1500,7 +1504,7 @@
         $("cost-body").textContent = "";
         $("replan-status").className = "fine";
         try {
-          const res = await fetch("/api/replan", {
+          const res = await sessionFetch("/api/replan", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -1556,7 +1560,7 @@
         $("compare-status").className = "fine";
         $("compare-table").textContent = "";
         try {
-          const res = await fetch("/api/compare", {
+          const res = await sessionFetch("/api/compare", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ tasks: tasks.map(t => ({...t,status:'pending',started_at:null})) }),
@@ -1660,10 +1664,11 @@
         $('auto-error').textContent = state.error || '';
       }
       async function controlAction(action, body = {}) {
+        if (autoBusy) return;
         autoBusy = true;
         document.querySelectorAll('.auto-toolbar button').forEach(b => b.disabled = true);
         try {
-          const response = await fetch('/api/control/' + action, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)});
+          const response = await sessionFetch('/api/control/' + action, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)});
           const value = await response.json();
           if (!response.ok) throw new Error(errText(value));
           if (action === 'preferences' || action === 'start') {
@@ -1687,25 +1692,46 @@
       $('auto-resume').onclick = () => controlAction('resume');
       $('auto-update').onclick = () => { if (preferencesDirty) controlAction('preferences', {tasks, base_revision:editedRevision}); };
       $('auto-weather').onchange = () => controlAction('weather', {profile:$('auto-weather').value});
+      $('reset-home').onclick = async () => {
+        if (!confirm('Reset this sample home to its original three devices and clear the current plan?')) return;
+        autoBusy = true;
+        busy(true);
+        try {
+          const response = await sessionFetch('/api/demo/reset', {method:'POST'});
+          if (!response.ok) throw new Error(errText(await response.json()));
+          location.reload();
+        } catch (err) {
+          $('reset-status').textContent = err.message;
+          autoBusy = false;
+          busy(false);
+        }
+      };
       async function pollControl() {
         try {
-          if (!autoBusy && $('main').getAttribute('aria-busy') !== 'true') {
-            const response = await fetch('/api/control');
+          if (!document.hidden && !autoBusy && $('main').getAttribute('aria-busy') !== 'true') {
+            const response = await sessionFetch('/api/control');
             if (!response.ok) throw new Error('Connection interrupted. Reconnecting…');
             const value = await response.json();
-            if (!autoBusy) renderControl(value);
+            if (!autoBusy && $('main').getAttribute('aria-busy') !== 'true') renderControl(value);
           }
         } catch (err) { $('auto-error').textContent = err.message; }
-        setTimeout(pollControl, 2000);
+        setTimeout(pollControl, autoState?.active || Object.values(autoState?.runs || {}).some(r => r.status === 'running') ? 2000 : 15000);
       }
-      busy(true);
-      loadDemo()
-        .then(() => { busy(false); pollControl(); })
-        .catch((err) => {
-          $("plan-status").textContent =
-            "Could not load the demo. Reload to try again. " + err.message;
-          $("plan-status").className = "err";
-        });
+      async function initialize() {
+        busy(true);
+        $('load-error').hidden = true;
+        try {
+          await loadDemo();
+          busy(false);
+          pollControl();
+        } catch (err) {
+          $('load-error').hidden = false;
+          $('load-error').querySelector('p').textContent = 'Could not connect. ' + err.message;
+          $('retry-load').disabled = false;
+        }
+      }
+      $('retry-load').onclick = initialize;
+      initialize();
     </script>
   </body>
 </html>

@@ -3,6 +3,6 @@
   "private": true,
   "description": "Minimal frontend checks for the LoadShift household coach",
   "scripts": {
-    "test": "node tests/web-smoke.mjs"
+    "test": "node tests/web-smoke.mjs && node --test tests/session-requests.mjs"
   }
 }
