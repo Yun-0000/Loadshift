@@ -890,7 +890,7 @@
       </section>
       <section class="workspace-view group" data-view="devices" hidden id="devices">
         <div class="view-heading"><div><h1>Devices &amp; preferences</h1><p>Choose the jobs. Set the boundaries.</p></div><a class="text-action" href="#today">Back to plan</a></div>
-        <p id="reset-home-row" hidden><button id="reset-home" type="button" class="secondary">Reset sample home</button><span id="reset-status" class="fine" role="status"></span></p>
+        <div id="reset-home-row" hidden><button id="reset-home" type="button" class="secondary">Reset sample home</button><span id="reset-confirm" hidden> Restore the original three devices and clear this plan? <button id="confirm-reset" type="button">Confirm reset</button> <button id="cancel-reset" type="button" class="secondary">Cancel</button></span><p id="reset-status" class="fine" role="status"></p></div>
         <div id="device-details">
           <div class="split">
             <div>
@@ -1692,8 +1692,15 @@
       $('auto-resume').onclick = () => controlAction('resume');
       $('auto-update').onclick = () => { if (preferencesDirty) controlAction('preferences', {tasks, base_revision:editedRevision}); };
       $('auto-weather').onchange = () => controlAction('weather', {profile:$('auto-weather').value});
-      $('reset-home').onclick = async () => {
-        if (!confirm('Reset this sample home to its original three devices and clear the current plan?')) return;
+      $('reset-home').onclick = () => {
+        $('reset-confirm').hidden = false;
+        $('confirm-reset').focus();
+      };
+      $('cancel-reset').onclick = () => {
+        $('reset-confirm').hidden = true;
+        $('reset-home').focus();
+      };
+      $('confirm-reset').onclick = async () => {
         autoBusy = true;
         busy(true);
         try {
